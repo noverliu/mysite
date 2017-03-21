@@ -1,0 +1,9 @@
+F:\Code\MySite\Web\MySite\MySite\bin\Debug\netcoreapp1.1\MySite.deps.json
+F:\Code\MySite\Web\MySite\MySite\bin\Debug\netcoreapp1.1\MySite.runtimeconfig.json
+F:\Code\MySite\Web\MySite\MySite\bin\Debug\netcoreapp1.1\MySite.runtimeconfig.dev.json
+F:\Code\MySite\Web\MySite\MySite\bin\Debug\netcoreapp1.1\MySite.dll
+F:\Code\MySite\Web\MySite\MySite\obj\Debug\netcoreapp1.1\MySite.csprojResolveAssemblyReference.cache
+F:\Code\MySite\Web\MySite\MySite\obj\Debug\netcoreapp1.1\MySite.AssemblyInfo.cs
+F:\Code\MySite\Web\MySite\MySite\bin\Debug\netcoreapp1.1\MySite.pdb
+F:\Code\MySite\Web\MySite\MySite\obj\Debug\netcoreapp1.1\MySite.dll
+F:\Code\MySite\Web\MySite\MySite\obj\Debug\netcoreapp1.1\MySite.pdb
