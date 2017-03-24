@@ -227,7 +227,7 @@
 		box-sizing: border-box;
 	}
 
-	.row > * {
+	.floatrow > * {
 		float: left;
 		-moz-box-sizing: border-box;
 		-webkit-box-sizing: border-box;
@@ -2186,13 +2186,13 @@
 
             #main > section.one {
                 background-color: #81918E;
-                background-image: url("../../images/DSC_0111.JPG");
+                background-image: url("../../images/DSC_0111.jpg");
             }
                 #main > section.one .banner {
                     position: relative;
                     width: 100%;
                     height: 100%;
-                    background-image: url("../../images/DSC_0111.JPG");
+                    background-image: url("../../images/DSC_0111.jpg");
                 }
 			#main > section.two {
 				background-color: #f5fafa;

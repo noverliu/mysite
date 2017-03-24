@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" />
+    <PackageReference Include="system.valuetuple" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
@@ -26,5 +27,9 @@
     <Folder Include="Views\Person\" />
     <Folder Include="Views\Common\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tools\qiming\qiming.csproj" />
+  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -1,0 +1,188 @@
+﻿@model MySite.Models.Tools.QimingModel
+
+@{
+    ViewData["Title"] = "起名小工具";
+    var now = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+}
+@section cssFilesBefore{
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+<link href="~/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+}
+<div id="main">
+    <section>
+        <div class="container">
+            <header>
+                <h2>起名小工具</h2>
+            </header>
+            <p>本工具调用百度起名接口，批量查询名字测分结果</p>
+        </div>
+        <form class="form-horizontal">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 .col-xs-12">
+                        <div class="form-group">
+                            <label for="firstname">姓</label>
+                            <input class="form-control" id="firstname" placeholder="姓氏" v-model="firstname">
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <label class="radio-inline  pull-left">
+                                <input type="radio" name="gender" id="gender-girl" value="girl" v-model="gender">女宝
+                            </label>
+                            <label class="radio-inline  pull-left">
+                                <input type="radio" name="gender" id="gender-boy" value="boy" v-model="gender">男宝
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday">生日</label>
+                            <input class="form-control" id="birthday" v-model="birthday">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-inline  pull-left">
+                                <input type="radio" id="datetype-gongli" name="datetype" value="gongli" v-model="datetype">公历
+                            </label>
+                            <label class="checkbox-inline pull-left">
+                                <input type="radio" id="datetype-nongli" name="datetype" value="nongli" v-model="datetype">农历
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 .col-xs-12">
+                        <div class="form-group">
+                            <label for="words">候选字</label>
+                            <input class="form-control" id="words" placeholder="输入所有候选字，不要有间隔，最多15个字" v-model="words">
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" value="" v-model="allowReduplication">
+                                    允许使用叠字，如：张天天
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-inline  pull-left">
+                                <input type="radio" id="danziming" name="numWord" value="1" v-model="numWord">单字名
+                            </label>
+                            <label class="checkbox-inline pull-left">
+                                <input type="radio" id="shuangziming" name="numWord" value="2" v-model="numWord">双字名
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" v-on:click="submit" class="btn btn-primary btn-lg" v-bind:disabled="running">{{buttontext}}</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="container text-left" v-if="hasResult">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th> # </th>
+                        <th> 名字 </th>
+                        <th> 评分 </th>
+                        <th> 五行 </th>
+                        <th> 链接 </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(r,index) in result">
+                        <td>{{index}}</td>
+                        <td> {{r.data.jibenInfo.name}} </td>
+                        <td> {{r.data.scoreInfo.value}} </td>
+                        <td> {{r.data.baziInfo.value[0].value}} </td>
+                        <td> 
+                            <a class="btn btn-info btn-sm" v-bind:href="r.data.baziInfo.url">八字</a>
+                        <a class="btn btn-info btn-sm" v-bind:href="r.data.wenhuaInfo.url">文化</a>
+                        </td>                        
+                    </tr>                   
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+    @section Scripts{
+    <script src="~/js/bootstrap-datetimepicker.js"></script>
+        <script>
+            $(function () {
+                $("#birthday").datetimepicker({ format: 'yyyy-mm-dd hh:ii' });
+            })
+            function unique(arr) {
+                var result = [], hash = {};
+                for (var i = 0, elem; (elem = arr[i]) != null; i++) {
+                    if (!hash[elem]) {
+                        result.push(elem);
+                        hash[elem] = true;
+                    }
+                }
+                return result;
+                //http://www.cnblogs.com/sosoft/
+            }
+            var vm = new Vue({
+                el: "#main",
+                data: {
+                    running: false,
+                        gender: "girl",
+                        firstname: "",
+                        birthday: "@(now)",
+                        datetype: "gongli",
+                        words: "",
+                        wordArray: [],
+                        allowReduplication: false,
+                        buttontext:"开始测分",
+                        result: [],
+                        numWord:2
+                },
+                computed: {
+                    hasResult: function () {
+                        return this.result != undefined&&this.result.length>0
+                    }
+                },
+                watch: {
+                    words: function (val, oldVal) {                         
+                        var wa =val.split("");
+                        val = unique(wa).join("");
+                        val = val.substr(0, 15);
+                        $("#words").val(val);
+                        this.wordArray = val.split("");
+                    }
+                },
+                methods: {
+                    submit: function () {
+                        var _self = this;
+                        this.running = true;
+                        this.buttontext = "测分中...";
+                        $.ajax({
+                            url: "@Url.Action("Ceming")",
+                            type: "POST",
+                            data: JSON.stringify({
+                                FirstName: this.firstname,
+                                Words: this.wordArray,
+                                Gender: this.gender == "girl",
+                                TimeType: this.dateType == "nongli",
+                                Birthday: this.birthday,
+                                AllowReduplication: this.allowReduplication,
+                                numWord: this.numWord,
+                                result:""
+                            }),
+                            contentType: "application/json;charset=utf-8",
+                            dateType:"json"
+                        }).done(function (data) {
+                            _self.buttontext = "再测一次";
+                            _self.result = data;
+                            console.log(data);
+                            }).always(function () {
+                                _self.running = false;
+                            })
+                    }
+                }
+            })
+        </script>
+       
+    }
+
+    
